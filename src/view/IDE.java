@@ -5,6 +5,22 @@
  */
 package view;
 
+import controller.Validacoes;
+import file.Ficheiro;
+import java.awt.Color;
+import java.awt.Component;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import model.TabelaTokens;
+import model.Token;
+
 /**
  *
  * @author De Carvalho
@@ -14,10 +30,17 @@ public class IDE extends javax.swing.JFrame {
     /**
      * Creates new form IDE
      */
-    public IDE(){
+    private String[] colunas = {"Token", "Classe", "Linha"};
+
+    public IDE() {
         setTitle("NET-JEANS");
         initComponents();
         editor.setBorder(new Linhas());
+        linha = new ArrayList<>();
+        model_table = new TabelaTokens(linha, colunas);
+        TableCellRenderer renderer = new EvenOddRenderer();
+        jTable1.setDefaultRenderer(Object.class, renderer);
+        jTree1.setModel(null);
     }
 
     /**
@@ -32,12 +55,13 @@ public class IDE extends javax.swing.JFrame {
         container = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        open_file_btn = new javax.swing.JButton();
+        correr_btn = new javax.swing.JButton();
+        criate_btn = new javax.swing.JButton();
+        save_btn = new javax.swing.JButton();
+        clear_btn = new javax.swing.JButton();
+        redo_btn = new javax.swing.JButton();
+        undo_btn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
@@ -57,62 +81,83 @@ public class IDE extends javax.swing.JFrame {
 
         jToolBar1.setRollover(true);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-abrir-arquivo-sob-o-cursor-30.png"))); // NOI18N
-        jButton2.setToolTipText("Open file");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        open_file_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-abrir-arquivo-sob-o-cursor-30.png"))); // NOI18N
+        open_file_btn.setToolTipText("Open file");
+        open_file_btn.setFocusable(false);
+        open_file_btn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        open_file_btn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        open_file_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                open_file_btnActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton2);
+        jToolBar1.add(open_file_btn);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-powershell-30.png"))); // NOI18N
-        jButton3.setToolTipText("Execute");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        correr_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-powershell-30.png"))); // NOI18N
+        correr_btn.setToolTipText("Execute");
+        correr_btn.setFocusable(false);
+        correr_btn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        correr_btn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        correr_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                correr_btnActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton3);
+        jToolBar1.add(correr_btn);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-salvar-30.png"))); // NOI18N
-        jButton1.setToolTipText("Save");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
-
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-vassoura-30.png"))); // NOI18N
-        jButton4.setToolTipText("Clear editor");
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton4);
-
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-refazer-30.png"))); // NOI18N
-        jButton6.setToolTipText("Redo");
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton6);
-
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-desfazer-30.png"))); // NOI18N
-        jButton5.setToolTipText("Undo");
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        criate_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-novo-por-cópia-30.png"))); // NOI18N
+        criate_btn.setFocusable(false);
+        criate_btn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        criate_btn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        criate_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                criate_btnActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton5);
+        jToolBar1.add(criate_btn);
+
+        save_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-salvar-30.png"))); // NOI18N
+        save_btn.setToolTipText("Save");
+        save_btn.setFocusable(false);
+        save_btn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        save_btn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(save_btn);
+
+        clear_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-vassoura-30.png"))); // NOI18N
+        clear_btn.setToolTipText("Clear editor");
+        clear_btn.setFocusable(false);
+        clear_btn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        clear_btn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        clear_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clear_btnActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(clear_btn);
+
+        redo_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-refazer-30.png"))); // NOI18N
+        redo_btn.setToolTipText("Redo");
+        redo_btn.setFocusable(false);
+        redo_btn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        redo_btn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        redo_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                redo_btnActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(redo_btn);
+
+        undo_btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-desfazer-30.png"))); // NOI18N
+        undo_btn.setToolTipText("Undo");
+        undo_btn.setFocusable(false);
+        undo_btn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        undo_btn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        undo_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                undo_btnActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(undo_btn);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -225,17 +270,110 @@ public class IDE extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTable1MouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void open_file_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_open_file_btnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        openFile();
+    }//GEN-LAST:event_open_file_btnActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void correr_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_correr_btnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        if (!editor.getText().isEmpty()) {
+            jTable1.removeAll();
+            model_table.removeall();
+            array();
+            jTable1.setModel(model_table);
+            jTable1.setVisible(true);
+        } else {
+        }
+    }//GEN-LAST:event_correr_btnActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void undo_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undo_btnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+        JOptionPane.showMessageDialog(null, "Nao acreditou ne?");
+    }//GEN-LAST:event_undo_btnActionPerformed
+
+    private void clear_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clear_btnActionPerformed
+        // TODO add your handling code here:
+        editor.setText("");
+        model_table.removeall();
+        jTable1.removeAll();
+        jTable1.setModel(model_table);
+        jTable1.setVisible(false);
+    }//GEN-LAST:event_clear_btnActionPerformed
+
+    private void redo_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redo_btnActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, "Nao faco nada ainda, o botao undo tambem. Estamos so a infeitar");
+    }//GEN-LAST:event_redo_btnActionPerformed
+
+    private void criate_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_criate_btnActionPerformed
+        // TODO add your handling code here:
+        String nome = JOptionPane.showInputDialog("Nome do projeto");
+        Ficheiro.criar(nome);
+    }//GEN-LAST:event_criate_btnActionPerformed
+
+    public void array() {
+
+        String texto = editor.getText();
+        int posicao = 0;
+        model_table.removeall();
+        if (texto.length() > 0) {
+            String[] textosplit;
+            textosplit = texto.split("\n");
+
+            for (int i = 0; i < textosplit.length; i++) {
+                String textoposix = textosplit[i];
+                String[] lista = textoposix.split(" ");
+
+                for (int k = 0; k < lista.length; k++) {
+                    posicao = posicao + lista[k].length() + 1;
+                    Token token = new Token(validar(lista[k]), lista[k], i + 1, posicao);
+                    if(!token.getToken().equals(""))
+                    model_table.addlinha(token);
+
+                }
+            }
+        } else {
+            jTable1.removeAll();
+            jTable1.clearSelection();
+        }
+
+    }
+
+    public String validar(String lexema) {
+        return classificar.validar(lexema);
+    }
+
+    class EvenOddRenderer implements TableCellRenderer {
+
+        public final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
+        Token token;
+
+        public List<Token> list;
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            Color foreground, background;
+            this.list = model_table.getLinhas();
+
+            if (isSelected) {
+                foreground = Color.WHITE;
+                background = new Color(153, 153, 153);
+            } else {
+                if (this.list.get(row).getClasse().equals("Indefinido")) {
+                    foreground = Color.BLACK;
+                    background = new Color(255, 102, 0);
+                } else {
+                    foreground = Color.BLACK;
+                    background = new Color(255, 255, 255);
+                }
+            }
+            renderer.setForeground(foreground);
+            renderer.setBackground(background);
+            return renderer;
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -272,15 +410,33 @@ public class IDE extends javax.swing.JFrame {
         });
     }
 
+    private void openFile() {
+        JFileChooser jFile = new JFileChooser(System.getProperty("user.dir"));
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.jeans", "jeans");
+
+        jFile.addChoosableFileFilter(filter);
+        jFile.setAcceptAllFileFilterUsed(false);
+
+        jFile.setDialogType(JFileChooser.OPEN_DIALOG);
+
+        int result = jFile.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jFile.getSelectedFile();
+            String path = selectedFile.getAbsolutePath();
+
+        } else if (result == JFileChooser.CANCEL_OPTION) {
+            System.out.println("CANCELED");
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton clear_btn;
     private javax.swing.JPanel container;
+    private javax.swing.JButton correr_btn;
+    private javax.swing.JButton criate_btn;
     private javax.swing.JTextArea editor;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -294,5 +450,13 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTree jTree1;
+    private javax.swing.JButton open_file_btn;
+    private javax.swing.JButton redo_btn;
+    private javax.swing.JButton save_btn;
+    private javax.swing.JButton undo_btn;
     // End of variables declaration//GEN-END:variables
+
+    private ArrayList<Token> linha;
+    private TabelaTokens model_table;
+    private Validacoes classificar;
 }
